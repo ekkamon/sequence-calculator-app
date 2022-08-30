@@ -54,15 +54,13 @@ const App: React.FC = () => {
     e.preventDefault();
 
     if (!question) {
-      return console.error('กรุณากรอกโจทย์ที่ต้องการหาคำตอบ');
+      return alert('กรุณากรอกโจทย์ที่ต้องการหาคำตอบ');
     }
 
     let getQury: Array<any> = question.split(',');
 
     if (getQury.length < 5) {
-      return console.error(
-        'กรอกข้อมูลไม่ถูกต้อง /n ตัวอย่าง 2, 4, 6, ..., 100'
-      );
+      return alert('กรอกข้อมูลไม่ถูกต้อง /n ตัวอย่าง 2, 4, 6, ..., 100');
     }
 
     // remove ...
@@ -119,7 +117,7 @@ const App: React.FC = () => {
         ans = r ** (i - 1);
 
         if (i >= 1000) {
-          return console.error('ไม่สามารถคิดข้อนี่ได้กรุณาเช็คโจทย์');
+          return alert('ไม่สามารถคิดข้อนี่ได้กรุณาเช็คโจทย์');
         }
 
         if (ans === aN) {
@@ -148,7 +146,7 @@ const App: React.FC = () => {
         type: AnswerType.Geometric,
       });
     } else {
-      return console.error('ขออภัยไม่สามารถคิดโจทย์ข้อนี้ได้');
+      return alert('ขออภัยไม่สามารถคิดโจทย์ข้อนี้ได้');
     }
   };
 
