@@ -182,6 +182,10 @@ const App: React.FC = () => {
               <ImArrowDown className='mt-5 mb-5 text-xl' />
             </div>
             <div className='block border bg-gray-50 rounded w-full p-4'>
+              <div className='mb-3'>
+                <span className='font-bold mr-2 '>โจทย์ข้อนี้เป็นลำดับ :</span>
+                {answer.type === AnswerType.Arithmetic ? 'เลขคณิต' : 'เรขาคณิต'}
+              </div>
               <span className='font-bold mr-2 '>พจน์ที่ </span>
               <input
                 type='number'
@@ -193,7 +197,6 @@ const App: React.FC = () => {
                 }
               />
               <span className='font-bold ml-2 '>
-                {' '}
                 คือ {answer.aList[aN - 1]}
               </span>
             </div>
@@ -209,9 +212,13 @@ const App: React.FC = () => {
                   : 'a1 * r ^ (n-1)'}
               </div>
               <div className='mb-3'>
-                <span className='font-bold'>ผลต่างรวม : </span>
-                {answer.query.a2}{' '}
-                {answer.type === AnswerType.Arithmetic ? '-' : '÷'}{' '}
+                <span className='font-bold'>
+                  {answer.type === AnswerType.Arithmetic
+                    ? 'ผลต่างร่วม : '
+                    : 'อัตราส่วนร่วม : '}
+                </span>
+                {answer.query.a2}
+                {answer.type === AnswerType.Arithmetic ? '-' : '÷'}
                 {answer.query.a1} = {answer.d}
               </div>
               <div className='mb-3'>
