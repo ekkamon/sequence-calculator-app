@@ -133,7 +133,7 @@ const App: React.FC = () => {
           n,
           aTotal,
           aList,
-          aN: a1 + d,
+          aN: a1 + (1 - 1) * d,
           type: AnswerType.Arithmetic,
         });
       }
@@ -193,7 +193,7 @@ const App: React.FC = () => {
           n,
           aTotal,
           aList,
-          aN: a1,
+          aN: a1 * r ** (1 - 1),
           type: AnswerType.Geometric,
         });
       }
@@ -219,6 +219,12 @@ const App: React.FC = () => {
       newValue.aN = answer.query.a1 * answer.d ** (value - 1);
       setAnswer(newValue);
     }
+  };
+
+  const solArithmetic = () => {
+    const value = answer.d * -1 + answer.query.a1;
+
+    return value !== 0 ? value : '';
   };
 
   return (
@@ -296,7 +302,7 @@ const App: React.FC = () => {
                           aN = ({answer.query.a1}) + (n-1)({answer.d})
                         </p>
                         <p>
-                          aN = {answer.d}n{answer.d * -1 + answer.query.a1 > 0}
+                          aN = {answer.d}n{solArithmetic()}
                         </p>
                       </>
                     ) : (
