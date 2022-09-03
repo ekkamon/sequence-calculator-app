@@ -5,6 +5,8 @@ import { ImArrowDown } from 'react-icons/im';
 enum AnswerType {
   Arithmetic = 1,
   Geometric = 2,
+  AtrithWordmetic = 3,
+  GeometricWordmetic = 4,
 }
 
 interface IAnswer {
@@ -23,7 +25,7 @@ interface IAnswer {
   type: AnswerType;
 }
 
-const initAnswer = {
+let initAnswer = {
   state: false,
   query: {
     a1: 0,
@@ -44,10 +46,13 @@ const App: React.FC = () => {
   const [answer, setAnswer] = useState<IAnswer>(initAnswer);
   const [aN, setAN] = useState<number>(1);
 
-  const resetAnswer = (e: FormEvent<HTMLButtonElement>) => {
-    e.preventDefault();
+  const resetAnswer = (resetQuiz = false) => {
+    if (resetQuiz) {
+      setQuestion('');
+    }
+
     setAnswer(initAnswer);
-    setQuestion('');
+    setAN(1);
   };
 
   const findAnswer = (e: FormEvent<HTMLButtonElement>) => {
@@ -57,10 +62,14 @@ const App: React.FC = () => {
       return alert('กรุณากรอกโจทย์ที่ต้องการหาคำตอบ');
     }
 
+    resetAnswer();
+
     let getQury: Array<any> = question.split(',');
 
-    if (getQury.length < 5) {
-      return alert('กรอกข้อมูลไม่ถูกต้อง /n ตัวอย่าง 2, 4, 6, ..., 100');
+    if (getQury.length < 4) {
+      return alert(
+        'กรอกข้อมูลไม่ถูกต้อง /n ตัวอย่าง 2, 4, 6, ..., 100 /n 1, 3, 5, ...'
+      );
     }
 
     // remove ...
@@ -70,83 +79,145 @@ const App: React.FC = () => {
     getQury = getQury.map((i) => Number(i.replace(' ', '')));
 
     const [a1, a2, a3, aEnd]: Array<number> = getQury;
+    let word = 0;
 
-    // check is เลขคณิต or เรขาคณิต
+    if (!aEnd) {
+      word = Number(prompt('กรุณาใส่พจน์ที่ต้องการหา'));
+
+      if (!word) {
+        return alert('กรุณากรอกพจน์ที่ต้องการหา');
+      }
+    }
+
     if (a2 - a1 === a3 - a2) {
       //เลขคณิต aN = a1 + (n - 1) * d
-
       let d: number = a2 - a1;
-      let n: number = 0;
-      let r: number = a1 + -1 * d;
 
-      if (r >= 0) {
-        n = (aEnd - r) / d;
+      if (!aEnd) {
+        let _aN = a1 + (word - 1) * d;
+
+        setAN(word);
+        setAnswer({
+          state: true,
+          query: { a1, a2, a3, aEnd },
+          d,
+          n: 1000,
+          aTotal: 0,
+          aList: [],
+          aN: _aN,
+          type: AnswerType.AtrithWordmetic,
+        });
       } else {
-        n = (aEnd - r) / d;
+        let n: number = 0;
+        let r: number = a1 + -1 * d;
+
+        if (r >= 0) {
+          n = (aEnd - r) / d;
+        } else {
+          n = (aEnd - r) / d;
+        }
+
+        let aTotal: number = (n / 2) * (a1 + aEnd);
+        let aList: Array<number> = [];
+
+        let sum: number = a1;
+        for (let i = 1; i <= n; i++) {
+          if (i > 1) sum += d;
+          aList = [...aList, sum];
+        }
+
+        setAnswer({
+          state: true,
+          query: { a1, a2, a3, aEnd },
+          d,
+          n,
+          aTotal,
+          aList,
+          aN: a1 + d,
+          type: AnswerType.Arithmetic,
+        });
       }
-
-      let aTotal: number = (n / 2) * (a1 + aEnd);
-      let aList: Array<number> = [];
-
-      let sum: number = a1;
-      for (let i = 1; i <= n; i++) {
-        if (i > 1) sum += d;
-        aList = [...aList, sum];
-      }
-
-      setAnswer({
-        state: true,
-        query: { a1, a2, a3, aEnd },
-        d,
-        n,
-        aTotal,
-        aList,
-        aN: 0,
-        type: AnswerType.Arithmetic,
-      });
     } else if (a2 / a1 === a3 / a2) {
       //เรขาคณิต aN = a1 * r ^ n - 1
 
       let r: number = a2 / a1;
-      let aN: number = aEnd / a1;
-      let n: number = 0;
 
-      // aN = r ** (n - 1)
-      let ans: number = 0;
-      for (let i = 0; ans !== aN; i++) {
-        ans = r ** (i - 1);
+      if (!aEnd) {
+        let _aN = a1 * r ** (word - 1);
 
-        if (i >= 1000) {
-          return alert('ไม่สามารถคิดข้อนี่ได้กรุณาเช็คโจทย์');
+        setAN(word);
+        setAnswer({
+          state: true,
+          query: { a1, a2, a3, aEnd },
+          d: r,
+          n: 1000,
+          aTotal: 0,
+          aList: [],
+          aN: _aN,
+          type: AnswerType.GeometricWordmetic,
+        });
+      } else {
+        let aN: number = aEnd / a1;
+        let n: number = 0;
+
+        // aN = r ** (n - 1)
+        let ans: number = 0;
+        for (let i = 0; ans !== aN; i++) {
+          ans = r ** (i - 1);
+
+          if (i >= 1000) {
+            return alert('ไม่สามารถคิดข้อนี่ได้กรุณาเช็คโจทย์');
+          }
+
+          if (ans === aN) {
+            n = i;
+            break;
+          }
         }
 
-        if (ans === aN) {
-          n = i;
-          break;
+        // find aN
+
+        let aTotal = (aEnd * r - a1) / (r - 1);
+        let aList: Array<number> = [];
+
+        let sum: number = a1;
+        for (let i = 1; i <= n; i++) {
+          if (i > 1) sum *= r;
+          aList = [...aList, sum];
         }
+
+        setAnswer({
+          state: true,
+          query: { a1, a2, a3, aEnd },
+          d: r,
+          n,
+          aTotal,
+          aList,
+          aN: a1,
+          type: AnswerType.Geometric,
+        });
       }
-
-      let aTotal = (aEnd * r - a1) / (r - 1);
-      let aList: Array<number> = [];
-
-      let sum: number = a1;
-      for (let i = 1; i <= n; i++) {
-        if (i > 1) sum *= r;
-        aList = [...aList, sum];
-      }
-
-      setAnswer({
-        state: true,
-        query: { a1, a2, a3, aEnd },
-        d: r,
-        n,
-        aTotal,
-        aList,
-        aN: 0,
-        type: AnswerType.Geometric,
-      });
     } else {
       return alert('ขออภัยไม่สามารถคิดโจทย์ข้อนี้ได้');
+    }
+  };
+
+  const onChangeAN = (e: FormEvent<HTMLInputElement>) => {
+    const value = Number(e.currentTarget.value);
+    if (value > answer.n || value < 1) return;
+
+    setAN(value);
+    let newValue: IAnswer = answer;
+
+    if (
+      answer.type === AnswerType.Arithmetic ||
+      answer.type === AnswerType.AtrithWordmetic
+    ) {
+      newValue.aN = answer.query.a1 + (value - 1) * answer.d;
+      setAnswer(newValue);
+    } else {
+      newValue.aN = answer.query.a1 * answer.d ** (value - 1);
+      setAnswer(newValue);
     }
   };
 
@@ -160,7 +231,7 @@ const App: React.FC = () => {
           <input
             type='text'
             className='block p-4 pl-10 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300'
-            placeholder='ตัวอย่าง 2, 4, 6, ..., 100'
+            placeholder='ตัวอย่าง 2, 4, 6, ..., 100 หรือ 1, 3, 5, ...'
             value={question}
             onChange={(e) => setQuestion(e.target.value)}
             required
@@ -182,69 +253,110 @@ const App: React.FC = () => {
             <div className='block border bg-gray-50 rounded w-full p-4'>
               <div className='mb-3'>
                 <span className='font-bold mr-2 '>โจทย์ข้อนี้เป็นลำดับ :</span>
-                {answer.type === AnswerType.Arithmetic ? 'เลขคณิต' : 'เรขาคณิต'}
+
+                {answer.type === AnswerType.Arithmetic ||
+                answer.type === AnswerType.AtrithWordmetic
+                  ? 'เลขคณิต'
+                  : 'เรขาคณิต'}
               </div>
               <span className='font-bold mr-2 '>พจน์ที่ </span>
               <input
                 type='number'
                 className='bg-gray-50 border rounded text-center w-10'
                 value={aN}
-                onChange={(e) =>
-                  Number(e.target.value) <= answer.n &&
-                  setAN(Number(e.target.value))
-                }
+                onChange={onChangeAN}
               />
-              <span className='font-bold ml-2 '>
-                คือ {answer.aList[aN - 1]}
-              </span>
+              <span className='font-bold ml-2 '>คือ {answer.aN}</span>
             </div>
-            {/* แสดงคำตอบทั่วไป */}
             <div className='block grid justify-center'>
               <ImArrowDown className='mt-5 mb-5 text-xl' />
             </div>
-            <div className='block border bg-gray-50 rounded w-full p-4'>
-              <div className='mb-3'>
-                <span className='font-bold'>จากสูตร : </span>
-                {answer.type === AnswerType.Arithmetic
-                  ? 'a1 + (n - 1)d'
-                  : 'a1 * r ^ (n-1)'}
-              </div>
-              <div className='mb-3'>
-                <span className='font-bold'>
-                  {answer.type === AnswerType.Arithmetic
-                    ? 'ผลต่างร่วม : '
-                    : 'อัตราส่วนร่วม : '}
-                </span>
-                {answer.query.a2}
-                {answer.type === AnswerType.Arithmetic ? '-' : '÷'}
-                {answer.query.a1} = {answer.d}
-              </div>
-              <div className='mb-3'>
-                <span className='font-bold'>ผลรวมของพจน์ทั้งหมด : </span>
-                {answer.aTotal}
-              </div>
-              <div className='mb-3'>
-                <span className='font-bold'>มีพจน์ทั้งหมด : </span>
-                {answer.n} ตัว
-              </div>
-              <div className='grid-container grid grid-cols-8 gap-4 '>
-                {answer.aList.map((value) => {
-                  return (
-                    <div
-                      className='block border text-center rounded'
-                      key={value}
-                    >
-                      {value}
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
+            {answer.type === AnswerType.AtrithWordmetic ||
+            answer.type === AnswerType.GeometricWordmetic ? (
+              // คำตอบที่ให้หาพจน์ทั่วไป
+              <>
+                <div className='block border bg-gray-50 rounded w-full p-4'>
+                  <div className='mb-3'>
+                    <span className='font-bold'>จากสูตร : </span>
+                    {answer.type === AnswerType.AtrithWordmetic
+                      ? 'a1 + (n - 1)d'
+                      : 'a1 * r ^ (n-1)'}
+                  </div>
+                  <div className='mb-3'>
+                    <span className='font-bold'>ผลต่างร่วม : </span>
+                    {answer.query.a2} - {answer.query.a1} = {answer.d}
+                  </div>
+                  <div>
+                    <span className='font-bold'>วิธีทำ : </span>
+                  </div>
+                  <div className='ml-5'>
+                    {answer.type === AnswerType.AtrithWordmetic ? (
+                      <>
+                        <p>
+                          aN = ({answer.query.a1}) + (n-1)({answer.d})
+                        </p>
+                        <p>
+                          aN = {answer.d}n{answer.d * -1 + answer.query.a1 > 0}
+                        </p>
+                      </>
+                    ) : (
+                      <>
+                        <p>
+                          aN = ({answer.query.a1}) * {answer.d}^(n - 1)
+                        </p>
+                      </>
+                    )}
+                  </div>
+                </div>
+              </>
+            ) : (
+              // คำตอบที่ใส่ aEnd มา
+              <>
+                <div className='block border bg-gray-50 rounded w-full p-4'>
+                  <div className='mb-3'>
+                    <span className='font-bold'>จากสูตร : </span>
+                    {answer.type === AnswerType.Arithmetic
+                      ? 'a1 + (n - 1)d'
+                      : 'a1 * r ^ (n-1)'}
+                  </div>
+                  <div className='mb-3'>
+                    <span className='font-bold'>
+                      {answer.type === AnswerType.Arithmetic
+                        ? 'ผลต่างร่วม : '
+                        : 'อัตราส่วนร่วม : '}
+                    </span>
+                    {answer.query.a2}
+                    {answer.type === AnswerType.Arithmetic ? '-' : '÷'}
+                    {answer.query.a1} = {answer.d}
+                  </div>
+                  <div className='mb-3'>
+                    <span className='font-bold'>ผลรวมของพจน์ทั้งหมด : </span>
+                    {answer.aTotal}
+                  </div>
+                  <div className='mb-3'>
+                    <span className='font-bold'>มีพจน์ทั้งหมด : </span>
+                    {answer.n} ตัว
+                  </div>
+                  <div className='grid-container grid grid-cols-8 gap-4 '>
+                    {answer.aList.map((value) => {
+                      return (
+                        <div
+                          className='block border text-center rounded'
+                          key={value}
+                        >
+                          {value}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </>
+            )}
             <div className='block text-center mt-5'>
               <button
                 type='submit'
                 className='text-white rounded text-sm px-4 py-2 bg-red-700 hover:bg-red-800'
-                onClick={resetAnswer}
+                onClick={() => resetAnswer(true)}
               >
                 รีเซ็ตคำตอบ
               </button>
