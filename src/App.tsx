@@ -1,6 +1,8 @@
 import React, { FormEvent, useState } from 'react';
 import { FiSearch } from 'react-icons/fi';
 import { ImArrowDown } from 'react-icons/im';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
 
 enum AnswerType {
   Arithmetic = 1,
@@ -41,6 +43,8 @@ let initAnswer = {
   type: 0,
 };
 
+const MySwal = withReactContent(Swal);
+
 const App: React.FC = () => {
   const [question, setQuestion] = useState<string>('');
   const [answer, setAnswer] = useState<IAnswer>(initAnswer);
@@ -55,7 +59,7 @@ const App: React.FC = () => {
     setAN(1);
   };
 
-  const findAnswer = (e: FormEvent<HTMLButtonElement>) => {
+  const findAnswer = async (e: FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
     if (!question) {
@@ -82,11 +86,15 @@ const App: React.FC = () => {
     let word = 0;
 
     if (!aEnd) {
-      word = Number(prompt('กรุณาใส่พจน์ที่ต้องการหา'));
+      await MySwal.fire({
+        icon: 'question',
+        title: 'พจน์ที่คุณต้องการหา ?',
+        input: 'number',
+      }).then((result) => {
+        if (!result.isConfirmed) return;
 
-      if (!word) {
-        return alert('กรุณากรอกพจน์ที่ต้องการหา');
-      }
+        word = result.value;
+      });
     }
 
     if (a2 - a1 === a3 - a2) {
@@ -230,7 +238,7 @@ const App: React.FC = () => {
   return (
     <div className='p-4 grid place-items-center'>
       <div className='block lg:w-6/12	 w-full'>
-        <div className='relative'>
+        <div className='mb-5 relative'>
           <div className='flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none'>
             <FiSearch />
           </div>
@@ -254,7 +262,7 @@ const App: React.FC = () => {
           <>
             {/* หาพจที่เท่าไหร่ ? */}
             <div className='block grid justify-center'>
-              <ImArrowDown className='mt-5 mb-5 text-xl' />
+              <ImArrowDown className='mb-5 text-xl' />
             </div>
             <div className='block border bg-gray-50 rounded w-full p-4'>
               <div className='mb-3'>
