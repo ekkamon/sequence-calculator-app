@@ -1,8 +1,11 @@
 import React, { FormEvent, useState } from 'react';
-import { FiSearch } from 'react-icons/fi';
-import { ImArrowDown } from 'react-icons/im';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
+
+import { FiSearch } from 'react-icons/fi';
+import { ImArrowDown } from 'react-icons/im';
+
+import AlertImage from './assets/images/alert.png';
 
 enum AnswerType {
   Arithmetic = 1,
@@ -49,6 +52,20 @@ const App: React.FC = () => {
   const [question, setQuestion] = useState<string>('');
   const [answer, setAnswer] = useState<IAnswer>(initAnswer);
   const [aN, setAN] = useState<number>(1);
+  const [isAlert, setIsAlert] = useState<boolean>(false);
+
+  // alert popup
+  if (!isAlert) {
+    Swal.fire({
+      imageUrl: AlertImage,
+      confirmButtonText: 'กดเพื่อเข้าใช้งาน App',
+      confirmButtonColor: '#1e40af',
+    }).then((result) => {
+      if (result?.isConfirmed) {
+        setIsAlert(true);
+      }
+    });
+  }
 
   const resetAnswer = (resetQuiz = false) => {
     if (resetQuiz) {
