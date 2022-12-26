@@ -133,14 +133,8 @@ const App: React.FC = () => {
           type: AnswerType.AtrithWordmetic,
         });
       } else {
-        let n: number = 0;
         let r: number = a1 + -1 * d;
-
-        if (r >= 0) {
-          n = (aEnd - r) / d;
-        } else {
-          n = (aEnd - r) / d;
-        }
+        let n: number = (aEnd - r) / d;
 
         let aTotal: number = (n / 2) * (a1 + aEnd);
         let aList: Array<number> = [];
@@ -253,23 +247,23 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className='p-4 grid place-items-center'>
-      <div className='block lg:w-6/12	 w-full'>
-        <div className='mb-5 relative'>
-          <div className='flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none'>
+    <div className="p-4 grid place-items-center">
+      <div className="block lg:w-6/12	 w-full">
+        <div className="mb-5 relative">
+          <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
             <FiSearch />
           </div>
           <input
-            type='text'
-            className='block p-4 pl-10 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300'
-            placeholder='ตัวอย่าง 2, 4, 6, ..., 100 หรือ 1, 3, 5, ...'
+            type="text"
+            className="block p-4 pl-10 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300"
+            placeholder="ตัวอย่าง 2, 4, 6, ..., 100 หรือ 1, 3, 5, ..."
             value={question}
             onChange={(e) => setQuestion(e.target.value)}
             required
           />
           <button
-            type='submit'
-            className='text-white absolute right-2.5 bottom-2.5 rounded-lg text-sm px-4 py-2 bg-blue-700 hover:bg-blue-800'
+            type="submit"
+            className="text-white absolute right-2.5 bottom-2.5 rounded-lg text-sm px-4 py-2 bg-blue-700 hover:bg-blue-800"
             onClick={findAnswer}
           >
             หาคำตอบ
@@ -278,49 +272,49 @@ const App: React.FC = () => {
         {answer.state ? (
           <>
             {/* หาพจที่เท่าไหร่ ? */}
-            <div className='block grid justify-center'>
-              <ImArrowDown className='mb-5 text-xl' />
+            <div className="block grid justify-center">
+              <ImArrowDown className="mb-5 text-xl" />
             </div>
-            <div className='block border bg-gray-50 rounded w-full p-4'>
-              <div className='mb-3'>
-                <span className='font-bold mr-2 '>โจทย์ข้อนี้เป็นลำดับ :</span>
+            <div className="block border bg-gray-50 rounded w-full p-4">
+              <div className="mb-3">
+                <span className="font-bold mr-2 ">โจทย์ข้อนี้เป็นลำดับ :</span>
 
                 {answer.type === AnswerType.Arithmetic ||
                 answer.type === AnswerType.AtrithWordmetic
                   ? 'เลขคณิต'
                   : 'เรขาคณิต'}
               </div>
-              <span className='font-bold mr-2 '>พจน์ที่ </span>
+              <span className="font-bold mr-2 ">พจน์ที่ </span>
               <input
-                type='number'
-                className='bg-gray-50 border rounded text-center w-10'
+                type="number"
+                className="bg-gray-50 border rounded text-center w-10"
                 value={aN}
                 onChange={onChangeAN}
               />
-              <span className='font-bold ml-2 '>คือ {answer.aN}</span>
+              <span className="font-bold ml-2 ">คือ {answer.aN}</span>
             </div>
-            <div className='block grid justify-center'>
-              <ImArrowDown className='mt-5 mb-5 text-xl' />
+            <div className="block grid justify-center">
+              <ImArrowDown className="mt-5 mb-5 text-xl" />
             </div>
             {answer.type === AnswerType.AtrithWordmetic ||
             answer.type === AnswerType.GeometricWordmetic ? (
               // คำตอบที่ให้หาพจน์ทั่วไป
               <>
-                <div className='block border bg-gray-50 rounded w-full p-4'>
-                  <div className='mb-3'>
-                    <span className='font-bold'>จากสูตร : </span>
+                <div className="block border bg-gray-50 rounded w-full p-4">
+                  <div className="mb-3">
+                    <span className="font-bold">จากสูตร : </span>
                     {answer.type === AnswerType.AtrithWordmetic
                       ? 'a1 + (n - 1)d'
                       : 'a1 * r ^ (n-1)'}
                   </div>
-                  <div className='mb-3'>
-                    <span className='font-bold'>ผลต่างร่วม : </span>
+                  <div className="mb-3">
+                    <span className="font-bold">ผลต่างร่วม : </span>
                     {answer.query.a2} - {answer.query.a1} = {answer.d}
                   </div>
                   <div>
-                    <span className='font-bold'>วิธีทำ : </span>
+                    <span className="font-bold">วิธีทำ : </span>
                   </div>
-                  <div className='ml-5'>
+                  <div className="ml-5">
                     {answer.type === AnswerType.AtrithWordmetic ? (
                       <>
                         <p>
@@ -343,15 +337,15 @@ const App: React.FC = () => {
             ) : (
               // คำตอบที่ใส่ aEnd มา
               <>
-                <div className='block border bg-gray-50 rounded w-full p-4'>
-                  <div className='mb-3'>
-                    <span className='font-bold'>จากสูตร : </span>
+                <div className="block border bg-gray-50 rounded w-full p-4">
+                  <div className="mb-3">
+                    <span className="font-bold">จากสูตร : </span>
                     {answer.type === AnswerType.Arithmetic
                       ? 'a1 + (n - 1)d'
                       : 'a1 * r ^ (n-1)'}
                   </div>
-                  <div className='mb-3'>
-                    <span className='font-bold'>
+                  <div className="mb-3">
+                    <span className="font-bold">
                       {answer.type === AnswerType.Arithmetic
                         ? 'ผลต่างร่วม : '
                         : 'อัตราส่วนร่วม : '}
@@ -360,19 +354,19 @@ const App: React.FC = () => {
                     {answer.type === AnswerType.Arithmetic ? '-' : '÷'}
                     {answer.query.a1} = {answer.d}
                   </div>
-                  <div className='mb-3'>
-                    <span className='font-bold'>ผลรวมของพจน์ทั้งหมด : </span>
+                  <div className="mb-3">
+                    <span className="font-bold">ผลรวมของพจน์ทั้งหมด : </span>
                     {answer.aTotal}
                   </div>
-                  <div className='mb-3'>
-                    <span className='font-bold'>มีพจน์ทั้งหมด : </span>
+                  <div className="mb-3">
+                    <span className="font-bold">มีพจน์ทั้งหมด : </span>
                     {answer.n} ตัว
                   </div>
-                  <div className='grid-container grid grid-cols-8 gap-4 '>
+                  <div className="grid-container grid grid-cols-8 gap-4 ">
                     {answer.aList.map((value) => {
                       return (
                         <div
-                          className='block border text-center rounded'
+                          className="block border text-center rounded"
                           key={value}
                         >
                           {value}
@@ -383,10 +377,10 @@ const App: React.FC = () => {
                 </div>
               </>
             )}
-            <div className='block text-center mt-5'>
+            <div className="block text-center mt-5">
               <button
-                type='submit'
-                className='text-white rounded text-sm px-4 py-2 bg-red-700 hover:bg-red-800'
+                type="submit"
+                className="text-white rounded text-sm px-4 py-2 bg-red-700 hover:bg-red-800"
                 onClick={() => resetAnswer(true)}
               >
                 รีเซ็ตคำตอบ
